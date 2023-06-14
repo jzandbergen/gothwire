@@ -9,5 +9,5 @@ can benefit me.
 
 After reading some hackernews the following blogposts got me interested:
 
-- [The Future of Web Software Is HTML-over-WebSockets](https://alistapart.com/article/the-future-of-web-software-is-html-over-websockets/
+- [The Future of Web Software Is HTML-over-WebSockets](https://alistapart.com/article/the-future-of-web-software-is-html-over-websockets/)
 - [hotwired](https://hotwired.dev/)
