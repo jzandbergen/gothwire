@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Gothwire Example</title>
+    <script>
+        var socket = new WebSocket("ws://localhost:8083/ws");
+
+        socket.onopen = function() {
+            console.log("WebSocket connection established.");
+        };
+
+        socket.onmessage = function(event) {
+            console.log("Received message: " + event.data);
+            // a DOMparser can be used to parse HTML.
+            var parser = new DOMParser();
+
+            // Parse the received HTML fragment over websocket.
+            var doc = parser.parseFromString(event.data, "text/html");
+
+            // Store the received HTML fragment.
+            var htmlFragment = doc.querySelector('div');
+
+            // Look where the HTML fragment wants to attach itself.
+            var parentTarget = htmlFragment.getAttribute('parent_target');
+
+            // Find the element where the HTML Fragment wants to attach itself.
+            var targetDiv = document.getElementById(parentTarget);
+
+            // Update the DOM with the serverside rendered HTML fragment.
+            targetDiv.appendChild(htmlFragment);
+        };
+
+        socket.onerror = function(event) {
+            console.log("WebSocket connection error: " + event.error);
+            showError("Failed to establish WebSocket connection.");
+        };
+
+        socket.onclose = function(event) {
+            console.log("WebSocket connection closed with code: " + event.code);
+            showError("WebSocket connection closed.");
+        };
+
+        function sendMessage() {
+            var message = document.getElementById("messageInput").value;
+            socket.send(message);
+        }
+
+        function showError(message) {
+            var errorContainer = document.getElementById("errorContainer");
+            errorContainer.innerHTML = message;
+        }
+    </script>
+
+    <style>
+        [data-flex-container] {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            background-color: lightgray;
+            padding: 10px;
+        }
+
+        [data-flex-item] {
+            flex: 1;
+            margin: 5px;
+            padding: 10px;
+            background-color: white;
+            border: 1px solid gray;
+        }
+    </style>
+
+</head>
+<body>
+    <h1>Gothwire Example</h1><br>
+    This example sends a message over websocket to the server, after which the<br>
+    server renders a html fragment and sends the html back over the websocket.<br>
+    The client (aka the browser) receives the rendered HTML-fragment and updates <br>
+    the DOM with the rendered HTML fragment.<br>
+    <br>
+    This technique is called HTML-over-the-wire or HOTWire<br><br>
+    <div id="errorContainer"></div>
+    <input type="text" id="messageInput" placeholder="Enter a message">
+    <button onclick="sendMessage()">Send</button>
+
+    <div data-flex-container id="root">
+        hoi
+    </div>
+</body>
+</html>
+
